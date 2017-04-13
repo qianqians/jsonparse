@@ -168,12 +168,13 @@ namespace System.Text.Json
                     else
                     {
                         int status = 0;
+                        int E_status = 0;
 
                         for (int i = 0; i < v.Length; i++)
                         {
                             if (v[i] == '-')
                             {
-                                if (i == 0)
+                                if (i == 0 || v[i - 1] == 'E')
                                 {
                                     continue;
                                 }
@@ -183,7 +184,7 @@ namespace System.Text.Json
                                 }
                             }
 
-                            if ((v[i] < '0' || v[i] > '9') && v[i] != '.')
+                            if ((v[i] < '0' || v[i] > '9') && v[i] != '.' && v[i] != 'E')
                             {
                                 throw new Exception("format error");
                             }
@@ -192,13 +193,18 @@ namespace System.Text.Json
                             {
                                 status++;
                             }
+
+                            if (v[i] == 'E')
+                            {
+                                E_status++;
+                            }
                         }
 
-                        if (status == 0)
+                        if (status == 0 && E_status == 0)
                         {
                             _table[key] = Convert.ToInt64(v);
                         }
-                        else if (status == 1)
+                        else if (status == 1 && (E_status == 0 || E_status == 1))
                         {
                             _table[key] = Convert.ToDouble(v);
                         }
@@ -253,12 +259,13 @@ namespace System.Text.Json
                     else
                     {
                         int status = 0;
+                        int E_status = 0;
 
                         for (int i = 0; i < v.Length; i++)
                         {
                             if (v[i] == '-')
                             {
-                                if (i == 0)
+                                if (i == 0 || v[i-1] == 'E')
                                 {
                                     continue;
                                 }
@@ -268,7 +275,7 @@ namespace System.Text.Json
                                 }
                             }
 
-                            if ((v[i] < '0' || v[i] > '9') && v[i] != '.')
+                            if ((v[i] < '0' || v[i] > '9') && v[i] != '.' && v[i] != 'E')
                             {
                                 throw new Exception("format error");
                             }
@@ -277,13 +284,18 @@ namespace System.Text.Json
                             {
                                 status++;
                             }
+
+                            if (v[i] == 'E')
+                            {
+                                E_status++;
+                            }
                         }
 
-                        if (status == 0)
+                        if (status == 0 && E_status == 0)
                         {
                             _array.Add(Convert.ToInt64(v));
                         }
-                        else if (status == 1)
+                        else if (status == 1 && (E_status == 0 || E_status == 1))
                         {
                             _array.Add(Convert.ToDouble(v));
                         }

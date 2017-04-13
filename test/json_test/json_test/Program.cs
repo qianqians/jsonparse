@@ -39,7 +39,7 @@ namespace json_test
             ArrayList l1 = new ArrayList();
             l1.Add("v1");
             l1.Add(1);
-            l1.Add(2.2);
+            l1.Add(2.254365675475E-05);
             l1.Add(false);
             l1.Add(l);
             l1.Add(t);
