@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace System.Text.Json
 {
-    class Jsonparser
+    public class Jsonparser
     {
         public static String pack(object dict)
         {
