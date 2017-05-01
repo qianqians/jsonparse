@@ -1,8 +1,15 @@
 using System;
 using System.Collections;
 
-namespace System.Text.Json
+namespace Json
 {
+    public class Exception : System.Exception
+    {
+        public Exception(string err) : base(err)
+        {
+        }
+    }
+
     public class Jsonparser
     {
         public static String pack(object dict)
@@ -92,7 +99,7 @@ namespace System.Text.Json
                 }
 				else
 				{
-                    throw new System.Exception("can not parse this object to json");
+                    throw new Json.Exception("can not parse this object to json");
 				}
             };
 
@@ -180,13 +187,13 @@ namespace System.Text.Json
                                 }
                                 else
                                 {
-                                    throw new Exception("format error");
+                                    throw new Json.Exception("format error");
                                 }
                             }
 
                             if ((v[i] < '0' || v[i] > '9') && v[i] != '.' && v[i] != 'E')
                             {
-                                throw new Exception("format error");
+                                throw new Json.Exception("format error");
                             }
 
                             if (v[i] == '.')
@@ -210,7 +217,7 @@ namespace System.Text.Json
                         }
                         else
                         {
-                            throw new Exception("format error");
+                            throw new Json.Exception("format error");
                         }
                     }
                     
@@ -271,13 +278,13 @@ namespace System.Text.Json
                                 }
                                 else
                                 {
-                                    throw new Exception("format error");
+                                    throw new Json.Exception("format error");
                                 }
                             }
 
                             if ((v[i] < '0' || v[i] > '9') && v[i] != '.' && v[i] != 'E')
                             {
-                                throw new Exception("format error");
+                                throw new Json.Exception("format error");
                             }
 
                             if (v[i] == '.')
@@ -301,7 +308,7 @@ namespace System.Text.Json
                         }
                         else
                         {
-                            throw new Exception("format error");
+                            throw new Json.Exception("format error");
                         }
                     }
 
