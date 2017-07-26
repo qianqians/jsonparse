@@ -45,7 +45,31 @@ namespace Json
                 {
                     foreach (Object o in _array)
                     {
-                        if ((typeof(Hashtable).IsInstanceOfType(o)) || (typeof(ArrayList).IsInstanceOfType(o)))
+                        if ((typeof(Hashtable).IsInstanceOfType(o)) || (typeof(ArrayList).IsInstanceOfType(o)) || (typeof(Array).IsInstanceOfType(o)))
+                        {
+                            _out += pack(o);
+                        }
+                        else
+                        {
+                            _out += parsevalue(o);
+                        }
+                        _out += ",";
+                    }
+                    _out = _out.Remove(_out.Length - 1, 1);
+                }
+                _out += "]";
+
+                return _out;
+            };
+
+            Func<Array, String> parsearray = (Array _array) =>
+            {
+                String _out = "[";
+                if (_array.Length > 0)
+                {
+                    foreach (Object o in _array)
+                    {
+                        if ((typeof(Hashtable).IsInstanceOfType(o)) || (typeof(ArrayList).IsInstanceOfType(o)) || (typeof(Array).IsInstanceOfType(o)))
                         {
                             _out += pack(o);
                         }
@@ -70,7 +94,7 @@ namespace Json
                     {
                         _out += "\"" + Convert.ToString(_obj.Key) + "\"";
                         _out += ":";
-                        if ((typeof(Hashtable).IsInstanceOfType(_obj.Value)) || (typeof(ArrayList).IsInstanceOfType(_obj.Value)))
+                        if ((typeof(Hashtable).IsInstanceOfType(_obj.Value)) || (typeof(ArrayList).IsInstanceOfType(_obj.Value)) || (typeof(Array).IsInstanceOfType(_obj.Value)))
                         {
                             _out += pack(_obj.Value);
                         }
@@ -96,6 +120,10 @@ namespace Json
                 else if (typeof(ArrayList).IsInstanceOfType(o))
                 {
                     return parselist((ArrayList)o);
+                }
+                else if (typeof(Array).IsInstanceOfType(o))
+                {
+                    return parsearray((Array)o);
                 }
 				else
 				{
