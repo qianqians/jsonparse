@@ -13,10 +13,10 @@
 #include <cstdint>
 #include <sstream>
 #include <stack>
+#include <memory>
 
 #include <boost/unordered_map.hpp>
 #include <boost/any.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
@@ -37,13 +37,13 @@ typedef std::string JsonString;
 typedef std::int64_t JsonInt;
 typedef std::double_t JsonFloat;
 typedef boost::any JsonObject;
-typedef boost::shared_ptr<boost::unordered_map<std::string, JsonObject> > JsonTable;
+typedef std::shared_ptr<boost::unordered_map<std::string, JsonObject> > JsonTable;
 JsonTable Make_JsonTable(){
-	return boost::make_shared<boost::unordered_map<std::string, JsonObject>>();
+	return std::make_shared<boost::unordered_map<std::string, JsonObject>>();
 }
-typedef boost::shared_ptr<std::vector<JsonObject> > JsonArray;
+typedef std::shared_ptr<std::vector<JsonObject> > JsonArray;
 JsonArray Make_JsonArray(){
-	return boost::make_shared<std::vector<JsonObject> >();
+	return std::make_shared<std::vector<JsonObject> >();
 }
 static JsonNull JsonNull_t = nullptr;
 
@@ -145,7 +145,7 @@ std::string pack(JsonTable & o){
 	return _out;
 }
 
-inline std::string packer(JsonTable & o){
+inline std::string packer(JsonObject & o){
 	return pack(o);
 }
 
