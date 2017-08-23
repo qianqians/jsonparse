@@ -14,6 +14,30 @@ namespace Json
     {
         public static String pack(object dict)
         {
+            Func<String, String> preprocess = (String str) =>
+            {
+                String _out = "";
+
+                CharEnumerator c = str.GetEnumerator();
+                while (c.MoveNext()) 
+                {
+                    switch(c.Current.ToString())
+                    {
+                        case "\"":
+                            _out += "\\\"";
+                            break;
+
+                        default:
+                            _out += c.Current.ToString();
+                            break;
+                    }
+
+
+                } 
+
+                return _out;
+            };
+
             Func<String, String> parsestring = (String str) =>
             {
                 return "\"" + str + "\"";
@@ -92,7 +116,7 @@ namespace Json
                 {
                     foreach (System.Collections.DictionaryEntry _obj in _dict)
                     {
-                        _out += "\"" + Convert.ToString(_obj.Key) + "\"";
+                        _out += parsevalue(_obj.Key);
                         _out += ":";
                         if ((typeof(Hashtable).IsInstanceOfType(_obj.Value)) || (typeof(ArrayList).IsInstanceOfType(_obj.Value)) || (typeof(Array).IsInstanceOfType(_obj.Value)))
                         {
@@ -146,7 +170,46 @@ namespace Json
 
             Stack s = new Stack();
 
-            Func<String, String> parsekey = (String _c) =>{
+            Func<String, String> afterprocess = (String str) =>
+            {
+                Func<String, String> escape_ = (String _char) =>
+                {
+                    String char_ = "";
+
+                    switch(_char)
+                    {
+                        
+                        default:
+                            char_ = _char;
+                            break;
+                    }
+
+                    return char_;
+                };
+
+                String out_ = "";
+
+                CharEnumerator _c = str.GetEnumerator();
+                while (_c.MoveNext()) 
+                {
+                    switch (_c.Current.ToString())
+                    {
+                        case "\\":
+                            _c.MoveNext();
+                            out_ += escape_(_c.Current.ToString());
+                            break;
+                        default:
+                            out_ += _c.Current.ToString();
+                            break;
+                    }
+
+                } 
+
+                return out_;
+            };
+
+            Func<String, String> parsekey = (String _c) =>
+            {
                 key += _c;
                 return key;
             };
@@ -180,6 +243,7 @@ namespace Json
                     key = key.Substring(1, key.Length - 1);
                 }
                 key = key.Substring(1, key.Length - 2);
+                key = afterprocess(key);
 
                 if (v == "true")
                 {
@@ -198,7 +262,7 @@ namespace Json
                     if (v[0] == '\"' && v[v.Length - 1] == '\"')
                     {
                         v = v.Substring(1, v.Length - 2);
-                        _table[key] = v;
+                        _table[key] = afterprocess(v);
                     }
                     else
                     {
@@ -289,7 +353,7 @@ namespace Json
                     if (v[0] == '\"' && v[v.Length - 1] == '\"')
                     {
                         v = v.Substring(1, v.Length - 2);
-                        _array.Add(v);
+                        _array.Add(afterprocess(v));
                     }
                     else
                     {

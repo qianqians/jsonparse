@@ -64,6 +64,12 @@ namespace json_test
 
             var json = "[\"hub_call_gate\",\"forward_hub_call_client\",[\"0eb5d430-33b1-440c-b0f7-e3bd5eb701ed\",\"login\",\"login_sucess\",[\"onRisxOmFtBySUiNiXq0JK3jEB2o\",\"浅浅\",\"http://wx.qlogo.cn/mmopen/T121P1Nx7y8e9vDFCZ32ESZ2b6Ult4xdxJxZzsUOOZqyicsJJ0zWglC0ibl8r5h3qOCl1ZF2sar7Wt4hRR4sXpqq9S9esPWk2B/0\",1]]]";
             var o2 = Json.Jsonparser.unpack(json);
+
+            o.Add("json", json);
+            var stro = Json.Jsonparser.pack(o);
+            o = (Hashtable)Json.Jsonparser.unpack(stro);
+            var o3 = (ArrayList)Json.Jsonparser.unpack((String)o["json"]);
+
         }
     }
 }
