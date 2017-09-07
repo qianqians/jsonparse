@@ -40,7 +40,7 @@ namespace Json
 
             Func<String, String> parsestring = (String str) =>
             {
-                return "\"" + str + "\"";
+                return "\"" + preprocess(str) + "\"";
             };
 
             Func<object, String> parsevalue = (object value) =>
