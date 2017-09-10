@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections;
 
 namespace Json
@@ -16,7 +17,7 @@ namespace Json
         {
             Func<String, String> preprocess = (String str) =>
             {
-                String _out = "";
+                StringBuilder _out = new StringBuilder();
 
                 CharEnumerator c = str.GetEnumerator();
                 while (c.MoveNext()) 
@@ -24,115 +25,118 @@ namespace Json
                     switch(c.Current.ToString())
                     {
                         case "\"":
-                            _out += "\\\"";
+                            _out.Append("\\\"");
                             break;
 
                         default:
-                            _out += c.Current.ToString();
+                            _out.Append(c.Current.ToString());
                             break;
                     }
 
 
                 } 
 
-                return _out;
+                return _out.ToString();
             };
 
             Func<String, String> parsestring = (String str) =>
             {
-                return "\"" + preprocess(str) + "\"";
+                StringBuilder _out = new StringBuilder();
+                _out.AppendFormat("\"{0}\"", preprocess(str));
+
+                return _out.ToString();
             };
 
             Func<object, String> parsevalue = (object value) =>
             {
-                String _out = "";
+                StringBuilder _out = new StringBuilder();
                 if (typeof(String).IsInstanceOfType(value))
                 {
-                    _out += parsestring((String)value);
+                    _out.Append(parsestring((String)value));
                 }
                 else if (typeof(bool).IsInstanceOfType(value))
                 {
-                    _out += Convert.ToString(value).ToLower();
+                    _out.Append(Convert.ToString(value).ToLower());
                 }
                 else
                 {
-                    _out += Convert.ToString(value);
+                    _out.Append(Convert.ToString(value));
                 }
 
-                return _out;
+                return _out.ToString();
             };
 
             Func<ArrayList, String> parselist = (ArrayList _array) =>
             {
-                String _out = "[";
+                StringBuilder _out = new StringBuilder("[");
                 if (_array.Count > 0)
                 {
                     foreach (Object o in _array)
                     {
                         if ((typeof(Hashtable).IsInstanceOfType(o)) || (typeof(ArrayList).IsInstanceOfType(o)) || (typeof(Array).IsInstanceOfType(o)))
                         {
-                            _out += pack(o);
+                            _out.Append(pack(o));
                         }
                         else
                         {
-                            _out += parsevalue(o);
+                            _out.Append(parsevalue(o));
                         }
-                        _out += ",";
+                        _out.Append(",");
                     }
-                    _out = _out.Remove(_out.Length - 1, 1);
+                    _out.Remove(_out.Length - 1, 1);
                 }
-                _out += "]";
+                _out.Append("]");
 
-                return _out;
+                return _out.ToString();
             };
 
             Func<Array, String> parsearray = (Array _array) =>
             {
-                String _out = "[";
+                StringBuilder _out = new StringBuilder("[");
                 if (_array.Length > 0)
                 {
                     foreach (Object o in _array)
                     {
                         if ((typeof(Hashtable).IsInstanceOfType(o)) || (typeof(ArrayList).IsInstanceOfType(o)) || (typeof(Array).IsInstanceOfType(o)))
                         {
-                            _out += pack(o);
+                            _out.Append(pack(o));
                         }
                         else
                         {
-                            _out += parsevalue(o);
+                            _out.Append(parsevalue(o));
                         }
-                        _out += ",";
+                        _out.Append(",");
                     }
-                    _out = _out.Remove(_out.Length - 1, 1);
+                    _out.Remove(_out.Length - 1, 1);
                 }
-                _out += "]";
+                _out.Append("]");
 
-                return _out;
+                return _out.ToString();
             };
 
             Func<Hashtable, String> parsedict = (Hashtable _dict) =>{
-                String _out = "{";
+                StringBuilder _out = new StringBuilder("{"); 
                 if (_dict.Count > 0)
                 {
                     foreach (System.Collections.DictionaryEntry _obj in _dict)
                     {
-                        _out += parsevalue(_obj.Key);
-                        _out += ":";
+                        _out.Append(parsevalue(_obj.Key));
+                        _out.Append(":");
                         if ((typeof(Hashtable).IsInstanceOfType(_obj.Value)) || (typeof(ArrayList).IsInstanceOfType(_obj.Value)) || (typeof(Array).IsInstanceOfType(_obj.Value)))
                         {
-                            _out += pack(_obj.Value);
+                            _out.Append(pack(_obj.Value));
                         }
                         else
                         {
-                            _out += parsevalue(_obj.Value);
+                            _out.Append(parsevalue(_obj.Value));
                         }
-                        _out += ",";
+                        _out.Append(",");
                     }
-                    _out = _out.Remove(_out.Length - 1, 1);
+                    _out.Remove(_out.Length - 1, 1);
                 }
-                _out += "}";
+                _out.Append("}");
 
-                return _out;
+                return _out.ToString();
             };
 
             Func<object, String> parse = (object o) =>
@@ -164,8 +168,8 @@ namespace Json
             Hashtable _table = null;
             ArrayList _array = null;
 
-            String key = "";
-            String value = "";
+            StringBuilder key = new StringBuilder();
+            StringBuilder value = new StringBuilder();
             CharEnumerator c = jsonstr.GetEnumerator();
 
             Stack s = new Stack();
@@ -178,7 +182,6 @@ namespace Json
 
                     switch(_char)
                     {
-                        
                         default:
                             char_ = _char;
                             break;
@@ -187,7 +190,7 @@ namespace Json
                     return char_;
                 };
 
-                String out_ = "";
+                StringBuilder out_ = new StringBuilder();
 
                 CharEnumerator _c = str.GetEnumerator();
                 while (_c.MoveNext()) 
@@ -196,73 +199,72 @@ namespace Json
                     {
                         case "\\":
                             _c.MoveNext();
-                            out_ += escape_(_c.Current.ToString());
+                            out_.Append(escape_(_c.Current.ToString()));
                             break;
                         default:
-                            out_ += _c.Current.ToString();
+                            out_.Append(_c.Current.ToString());
                             break;
                     }
 
                 } 
 
-                return out_;
+                return out_.ToString();
             };
 
-            Func<String, String> parsekey = (String _c) =>
+            Action<String> parsekey = (String _c) =>
             {
-                key += _c;
-                return key;
+                key.Append(_c);
             };
 
-            Func<String, String> parsevalue = (String _c) =>
+            Action<String> parsevalue = (String _c) =>
             {
-                value += _c;
-                return value;
+                value.Append(_c);
             };
 
-            Func<String, String> parsesys = parsekey;
+            Action<String> parsesys = parsekey;
 
             Func<String, String> parsemap = (String _c) =>
             {
                 parsesys = parsekey;
 
-                if (value == "" || key == "")
+                if (value.ToString() == "" || key.ToString() == "")
                 {
                     return _c;
                 }
 
-                value = value.Trim();
-                while (value[0] == '\n' || value[0] == '\t' || value[0] == '\0')
+                string _value = value.ToString().Trim();
+                while (_value[0] == '\n' || _value[0] == '\t' || _value[0] == '\0')
                 {
-                    value = value.Substring(1, value.Length - 1);
+                    _value = _value.Substring(1, _value.Length - 1);
                 }
-                String v = value;
-                key = key.Trim();
-                while (key[0] == '\n' || key[0] == '\t' || key[0] == '\0')
+                String v = _value;
+
+                string _key = key.ToString().Trim();
+                while (_key[0] == '\n' || _key[0] == '\t' || _key[0] == '\0')
                 {
-                    key = key.Substring(1, key.Length - 1);
+                    _key = _key.Substring(1, _key.Length - 1);
                 }
-                key = key.Substring(1, key.Length - 2);
-                key = afterprocess(key);
+                _key = _key.Substring(1, _key.Length - 2);
+                _key = afterprocess(_key);
 
                 if (v == "true")
                 {
-                    _table[key] = true;
+                    _table[_key] = true;
                 }
                 else if (v == "false")
                 {
-                    _table[key] = false;
+                    _table[_key] = false;
                 }
                 else if (v == "null")
                 {
-                    _table[key] = null;
+                    _table[_key] = null;
                 }
                 else
                 {
                     if (v[0] == '\"' && v[v.Length - 1] == '\"')
                     {
                         v = v.Substring(1, v.Length - 2);
-                        _table[key] = afterprocess(v);
+                        _table[_key] = afterprocess(v);
                     }
                     else
                     {
@@ -301,11 +303,11 @@ namespace Json
 
                         if (status == 0 && E_status == 0)
                         {
-                            _table[key] = Convert.ToInt64(v);
+                            _table[_key] = Convert.ToInt64(v);
                         }
                         else if (status == 1 && (E_status == 0 || E_status == 1))
                         {
-                            _table[key] = Convert.ToDouble(v);
+                            _table[_key] = Convert.ToDouble(v);
                         }
                         else
                         {
@@ -315,26 +317,26 @@ namespace Json
                     
                 }
 
-                key = "";
-                value = "";
+                key = new StringBuilder();
+                value = new StringBuilder();
 
                 return _c;
             };
 
             Func<String, String> parsearray = (String _c) =>
             {
-                value = value.Trim();
+                string _value = value.ToString().Trim();
 
-                if (value == "")
+                if (_value == "")
                 {
                     return _c;
                 }
 
-                while (value[0] == '\n' || value[0] == '\t' || value[0] == '\0')
+                while (_value[0] == '\n' || _value[0] == '\t' || _value[0] == '\0')
                 {
-                    value = value.Substring(1, value.Length - 1);
+                    _value = _value.Substring(1, _value.Length - 1);
                 }
-                String v = value;
+                String v = _value;
 
                 if (v.ToLower() == "true")
                 {
@@ -406,8 +408,8 @@ namespace Json
 
                 }
 
-                key = "";
-                value = "";
+                key = new StringBuilder();
+                value = new StringBuilder();
 
                 return _c;
             };
@@ -467,16 +469,16 @@ namespace Json
                         Hashtable _newtable = new Hashtable();
                         if (_table != null)
                         {
-                            key = key.Trim();
-                            while (key[0] == '\n' || key[0] == '\t' || key[0] == '\0')
+                            string _key = key.ToString().Trim();
+                            while (_key[0] == '\n' || _key[0] == '\t' || _key[0] == '\0')
                             {
-                                key = key.Substring(1, key.Length - 1);
+                                _key = _key.Substring(1, _key.Length - 1);
                             }
                             s.Push(_table);
-                            key = key.Substring(1, key.Length - 2);
-                            _table[key] = _newtable;
+                            _key = _key.Substring(1, _key.Length - 2);
+                            _table[_key] = _newtable;
                             _table = null;
-                            key = "";
+                            key = new StringBuilder();
                         }
                         else if (_array != null)
                         {
@@ -510,15 +512,15 @@ namespace Json
                         if (_table != null)
                         {
                             s.Push(_table);
-                            key = key.Trim();
-                            while (key[0] == '\n' || key[0] == '\t' || key[0] == '\0')
+                            string _key = key.ToString().Trim();
+                            while (_key[0] == '\n' || _key[0] == '\t' || _key[0] == '\0')
                             {
-                                key = key.Substring(1, key.Length - 1);
+                                _key = _key.Substring(1, _key.Length - 1);
                             }
-                            key = key.Substring(1, key.Length - 2);
-                            _table[key] = _newarray;
+                            _key = _key.Substring(1, _key.Length - 2);
+                            _table[_key] = _newarray;
                             _table = null;
-                            key = "";
+                            key = new StringBuilder();
                         }
                         else if (_array != null)
                         {
