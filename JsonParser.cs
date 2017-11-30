@@ -58,6 +58,10 @@ namespace Json
                 {
                     _out.Append(Convert.ToString(value).ToLower());
                 }
+                else if (value == null)
+                {
+                    _out.Append("null");
+                }
                 else
                 {
                     _out.Append(Convert.ToString(value));

@@ -66,6 +66,7 @@ namespace json_test
             var o2 = Json.Jsonparser.unpack(json);
 
             o.Add("json", json);
+            o.Add("null", null);
             var stro = Json.Jsonparser.pack(o);
             o = (Hashtable)Json.Jsonparser.unpack(stro);
             var o3 = (ArrayList)Json.Jsonparser.unpack((String)o["json"]);
