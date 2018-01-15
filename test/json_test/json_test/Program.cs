@@ -71,7 +71,7 @@ namespace json_test
             o = (Hashtable)Json.Jsonparser.unpack(stro);
             var o3 = (ArrayList)Json.Jsonparser.unpack((String)o["json"]);
 
-            var str_json1 = "[\"gate_call_client\",\"call_client\",[\"login\",\"login_sucess\",[\"asasas\",\"nick\",\"http://d.lanrentuku.com/down/png/1702/10fruiticons_buttons/fruiticons_buttons_strawberry.png\",1,{\"sign_count\":0,\"task_victory_count\":0,\"pay_total\":0,\"consume_time\":[],\"gold\":5000,\"send_red_id_time\":[],\"redpackets_send_total\":0,\"object_type\":\"player\",\"account_type\":\"pc\",\"reg_key\":10000019,\"has_sign\":flase,\"diamond\":12,\"task_count\":0,\"unionid\":\"asasas\",\"snatch_red_id_time\":[],\"has_get_reward\":[0,0,0,0,0],\"redpackets_send_perday\":0,\"sign_month\":\"0\",\"openid\":\"nil\",\"task_game_count\":0,\"last_sendred_time\":1515768149652},\"\",0,0]]]";
+            var str_json1 = "[\"gate_call_client\",\"call_client\",[\"login\",\"login_sucess\",[\"asasas\",\"nick\",\"http://d.lanrentuku.com/down/png/1702/10fruiticons_buttons/fruiticons_buttons_strawberry.png\",1,{\"sign_count\":0,\"task_victory_count\":0,\"pay_total\":0,\"consume_time\":[],\"gold\":5000,\"send_red_id_time\":[],\"redpackets_send_total\":0,\"object_type\":\"player\",\"account_type\":\"pc\",\"reg_key\":10000019,\"has_sign\":false,\"diamond\":12,\"task_count\":0,\"unionid\":\"asasas\",\"snatch_red_id_time\":[],\"has_get_reward\":[0,0,0,0,0],\"redpackets_send_perday\":0,\"sign_month\":\"0\",\"openid\":\"nil\",\"task_game_count\":0,\"last_sendred_time\":1515768149652},\"\",0,0]]]";
             var o4 = Json.Jsonparser.unpack(str_json1);
 
         }
