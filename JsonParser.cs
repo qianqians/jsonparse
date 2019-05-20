@@ -447,7 +447,9 @@ namespace Json
             {
                 if (c.Current.ToString() == "\\"){
                     escape = 1;
-                }else{
+                    c.MoveNext();
+                }
+                else{
                     escape = 0;
                 }
 
